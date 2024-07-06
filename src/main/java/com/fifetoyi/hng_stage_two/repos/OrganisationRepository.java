@@ -5,8 +5,9 @@ import com.fifetoyi.hng_stage_two.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface OrganisationRepository extends JpaRepository<Organisation, String> {
-    List<Organisation> findByUsersContaining(User user);
+    Optional<Organisation> findByName(String name);
 }
