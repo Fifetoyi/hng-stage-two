@@ -1,9 +1,8 @@
-package com.fifetoyi.hng_stage_two.domain;
+package com.fifetoyi.hng_stage_two.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -14,14 +13,15 @@ public class Organisation {
     @Column(nullable = false, updatable = false)
     private String orgId;
 
+    @NotNull
     @Column(nullable = false)
     private String name;
 
     @Column
     private String description;
 
-    @ManyToMany(mappedBy = "organisations")
-    private Set<User> users;
+    @ManyToMany(mappedBy = "organisations", fetch = FetchType.LAZY)
+    private Set<User> users = new HashSet<>();
 
     public String getOrgId() {
         return orgId;

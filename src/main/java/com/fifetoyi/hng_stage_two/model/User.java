@@ -1,37 +1,44 @@
 package com.fifetoyi.hng_stage_two.model;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.List;
+import java.util.Set;
 
 
-public class UserDTO {
+@Entity
+@Table(name = "\"User\"")
+public class User {
 
-    @Size(max = 255)
-    @UserUserIdValid
+    @Id
+    @Column(nullable = false, updatable = false)
     private String userId;
 
     @NotNull
-    @Size(max = 255)
+    @Column(nullable = false)
     private String firstName;
 
     @NotNull
-    @Size(max = 255)
+    @Column(nullable = false)
     private String lastName;
 
     @NotNull
-    @Size(max = 255)
-    @UserEmailUnique
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotNull
-    @Size(max = 255)
+    @Column(nullable = false)
     private String password;
 
-    @Size(max = 255)
+    @Column
     private String phone;
 
-    private List<String> organisations;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "Users",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "orgId")
+    )
+    private Set<Organisation> organisations;
 
     public String getUserId() {
         return userId;
@@ -81,11 +88,11 @@ public class UserDTO {
         this.phone = phone;
     }
 
-    public List<String> getOrganisations() {
+    public Set<Organisation> getOrganisations() {
         return organisations;
     }
 
-    public void setOrganisations(final List<String> organisations) {
+    public void setOrganisations(final Set<Organisation> organisations) {
         this.organisations = organisations;
     }
 

@@ -1,4 +1,4 @@
-package com.fifetoyi.hng_stage_two.model;
+package com.fifetoyi.hng_stage_two.dto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -7,7 +7,6 @@ import javax.validation.constraints.Size;
 public class OrganisationDTO {
 
     @Size(max = 255)
-    @OrganisationOrgIdValid
     private String orgId;
 
     @NotNull

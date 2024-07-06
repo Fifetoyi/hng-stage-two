@@ -1,45 +1,35 @@
-package com.fifetoyi.hng_stage_two.domain;
+package com.fifetoyi.hng_stage_two.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 
-@Entity
-@Table(name = "\"User\"")
-public class User {
+public class UserDTO {
 
-    @Id
-    @Column(nullable = false, updatable = false)
+    @Size(max = 255)
     private String userId;
 
-    @Column(nullable = false)
+    @NotNull
+    @Size(max = 255)
     private String firstName;
 
-    @Column(nullable = false)
+    @NotNull
+    @Size(max = 255)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @NotNull
+    @Size(max = 255)
     private String email;
 
-    @Column(nullable = false)
+    @NotNull
+    @Size(max = 255)
     private String password;
 
-    @Column
+    @Size(max = 255)
     private String phone;
 
-    @ManyToMany
-    @JoinTable(
-            name = "Users",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "orgId")
-    )
-    private Set<Organisation> organisations;
+    private List<String> organisations;
 
     public String getUserId() {
         return userId;
@@ -89,11 +79,11 @@ public class User {
         this.phone = phone;
     }
 
-    public Set<Organisation> getOrganisations() {
+    public List<String> getOrganisations() {
         return organisations;
     }
 
-    public void setOrganisations(final Set<Organisation> organisations) {
+    public void setOrganisations(final List<String> organisations) {
         this.organisations = organisations;
     }
 
