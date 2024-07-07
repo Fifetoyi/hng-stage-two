@@ -1,8 +1,13 @@
 package com.fifetoyi.hng_stage_two.dto;
 
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class UserRegistrationDto {
+
+    @Id
+    private String userId;
     @NotNull
     private String firstName;
     @NotNull
@@ -12,6 +17,14 @@ public class UserRegistrationDto {
     @NotNull
     private String password;
     private String phone;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getFirstName() {
         return firstName;

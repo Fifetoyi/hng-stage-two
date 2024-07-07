@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @RestController
@@ -34,34 +35,74 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Validated @RequestBody UserRegistrationDto userDto) {
-        User user = new User();
-        user.setUserId(UUID.randomUUID().toString());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setPhone(userDto.getPhone());
+        try {
+            // Check if userDto is null
+            if (userDto == null) {
+                throw new IllegalArgumentException("UserRegistrationDto cannot be null");
+            }
 
-        User registeredUser = userService.registerUser(user);
-        String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(registeredUser.getEmail(), registeredUser.getPassword(), new ArrayList<>()));
+            // Check for mandatory fields
+            if (userDto.getFirstName() == null || userDto.getLastName() == null || userDto.getEmail() == null || userDto.getPassword() == null) {
+                throw new IllegalArgumentException("Required fields are missing");
+            }
 
-        UserDTO responseUserDto = new UserDTO();
-        responseUserDto.setUserId(registeredUser.getUserId());
-        responseUserDto.setFirstName(registeredUser.getFirstName());
-        responseUserDto.setLastName(registeredUser.getLastName());
-        responseUserDto.setEmail(registeredUser.getEmail());
-        responseUserDto.setPhone(registeredUser.getPhone());
+            User user = new User();
+            user.setUserId(UUID.randomUUID().toString());
+            user.setFirstName(userDto.getFirstName());
+            user.setLastName(userDto.getLastName());
+            user.setEmail(userDto.getEmail());
+            user.setPassword(userDto.getPassword());
+            user.setPhone(userDto.getPhone());
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "success");
-        response.put("message", "Registration successful");
-        response.put("accessToken", token);
-        response.put("user", responseUserDto);
+            // Register user
+            User registeredUser = userService.registerUser(user);
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+            // Check if registeredUser is null
+            if (registeredUser == null) {
+                throw new IllegalStateException("User registration failed");
+            }
+
+            // Generate token
+            String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(
+                    registeredUser.getEmail(), registeredUser.getPassword(), new ArrayList<>()
+            ));
+
+            // Prepare response
+            UserRegistrationDto responseUserDto = new UserRegistrationDto();
+            responseUserDto.setUserId(registeredUser.getUserId());
+            responseUserDto.setFirstName(registeredUser.getFirstName());
+            responseUserDto.setLastName(registeredUser.getLastName());
+            responseUserDto.setEmail(registeredUser.getEmail());
+            responseUserDto.setPhone(registeredUser.getPhone());
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("accessToken", token);
+            data.put("user", responseUserDto);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "success");
+            response.put("message", "Registration successful");
+            response.put("data", data);
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // Handle specific known exceptions
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // Handle unexpected exceptions
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", "An unexpected error occurred");
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+
     @PostMapping("/login")
+    @Transactional
     public ResponseEntity<?> login(@Validated @RequestBody UserLoginDto loginDto) {
         Optional<User> userOpt = userService.findByEmail(loginDto.getEmail());
 
@@ -69,18 +110,21 @@ public class AuthController {
             UserDetails userDetails = new org.springframework.security.core.userdetails.User(userOpt.get().getEmail(), userOpt.get().getPassword(), new ArrayList<>());
             String token = jwtUtil.generateToken(userDetails);
 
-            UserDTO responseUserDto = new UserDTO();
+            UserRegistrationDto responseUserDto = new UserRegistrationDto();
             responseUserDto.setUserId(userOpt.get().getUserId());
             responseUserDto.setFirstName(userOpt.get().getFirstName());
             responseUserDto.setLastName(userOpt.get().getLastName());
             responseUserDto.setEmail(userOpt.get().getEmail());
             responseUserDto.setPhone(userOpt.get().getPhone());
 
+            Map<String, Object> data = new HashMap<>();
+            data.put("accessToken", token);
+            data.put("user", responseUserDto);
+
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("message", "Login successful");
-            response.put("accessToken", token);
-            response.put("user", responseUserDto);
+            response.put("data", data);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
