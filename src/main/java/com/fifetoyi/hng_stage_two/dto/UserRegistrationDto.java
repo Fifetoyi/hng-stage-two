@@ -1,6 +1,8 @@
 package com.fifetoyi.hng_stage_two.dto;
 
 import javax.persistence.Id;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -8,13 +10,20 @@ public class UserRegistrationDto {
 
     @Id
     private String userId;
-    @NotNull
+
+    @NotBlank(message = "First name is required")
+    @Size(min = 1, max = 50, message = "First name must be between 1 and 50 characters")
     private String firstName;
-    @NotNull
+
+    @NotBlank(message = "Last name is required")
+    @Size(min = 1, max = 50, message = "Last name must be between 1 and 50 characters")
     private String lastName;
-    @NotNull
+
+    @NotBlank(message = "Email is required")
     private String email;
-    @NotNull
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
     private String phone;
 
