@@ -9,13 +9,15 @@ import com.fifetoyi.hng_stage_two.repos.UserRepository;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 
 @Service
-@Transactional
 public class UserService {
 
     @Autowired
@@ -24,23 +26,42 @@ public class UserService {
     @Autowired
     private OrganisationService organisationService;
 
-    public User registerUser(UserDTO userDTO) {
-        User user = new User();
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setPhone(userDTO.getPhone());
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-        return userRepository.save(user);
+    public User registerUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+
+        Organisation organisation = new Organisation();
+        organisation.setOrgId(UUID.randomUUID().toString());
+        organisation.setName(user.getFirstName() + "'s Organisation");
+        organisation = organisationService.createOrganisation(organisation);
+
+        savedUser.getOrganisations().add(organisation);
+        userRepository.save(savedUser);
+        return savedUser;
     }
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public Optional<User> findByUserId(String userId) {
-        return userRepository.findByUserId(userId);
+    public Set<Organisation> getUserOrganisation(String userId) {
+        return userRepository.findById(userId).map(User::getOrganisations).orElse(null);
+    }
+
+    public void addUserToOrganisation(String userId, String orgId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        Optional<Organisation> organisationOpt = organisationService.findById(orgId);
+
+        if (userOpt.isPresent() && organisationOpt.isPresent()) {
+            User user = userOpt.get();
+            Organisation organisation = organisationOpt.get();
+
+            user.getOrganisations().add(organisation);
+            userRepository.save(user);
+        }
     }
 
 }

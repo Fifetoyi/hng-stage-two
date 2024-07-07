@@ -7,6 +7,7 @@ import com.fifetoyi.hng_stage_two.repos.OrganisationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -16,17 +17,12 @@ public class OrganisationService {
     @Autowired
     private OrganisationRepository organisationRepository;
 
-    public Organisation createOrganisation(OrganisationDTO organisationDto) {
-        Organisation organisation = new Organisation();
-        organisation.setOrgId(UUID.randomUUID().toString());
-        organisation.setName(organisationDto.getName());
-        organisation.setDescription(organisationDto.getDescription());
-
-        return organisationRepository.save(organisation);
+    public Organisation createOrganisation(Organisation organisation) {
+        return null;
     }
 
-    public Organisation findByOrgId(String orgId) {
-        return organisationRepository.findById(orgId).orElse(null);
+    public Optional<Organisation> findById(String orgId) {
+        return organisationRepository.findById(orgId);
     }
 
 }
