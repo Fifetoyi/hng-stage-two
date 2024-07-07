@@ -1,4 +1,4 @@
-package com.fifetoyi.hng_stage_two.service;
+package com.fifetoyi.hng_stage_two.services;
 
 import com.fifetoyi.hng_stage_two.model.User;
 import com.fifetoyi.hng_stage_two.repos.UserRepository;

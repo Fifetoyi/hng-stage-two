@@ -1,12 +1,8 @@
-package com.fifetoyi.hng_stage_two.service;
+package com.fifetoyi.hng_stage_two.services;
 
-import com.fifetoyi.hng_stage_two.dto.OrganisationDTO;
-import com.fifetoyi.hng_stage_two.dto.UserDTO;
 import com.fifetoyi.hng_stage_two.model.Organisation;
 import com.fifetoyi.hng_stage_two.model.User;
 import com.fifetoyi.hng_stage_two.repos.UserRepository;
-
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

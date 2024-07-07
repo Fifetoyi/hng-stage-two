@@ -1,10 +1,9 @@
 package com.fifetoyi.hng_stage_two.controllers;
 
-import com.fifetoyi.hng_stage_two.dto.UserDTO;
 import com.fifetoyi.hng_stage_two.dto.UserLoginDto;
 import com.fifetoyi.hng_stage_two.dto.UserRegistrationDto;
 import com.fifetoyi.hng_stage_two.model.User;
-import com.fifetoyi.hng_stage_two.service.UserService;
+import com.fifetoyi.hng_stage_two.services.UserService;
 import com.fifetoyi.hng_stage_two.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

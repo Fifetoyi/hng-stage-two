@@ -1,6 +1,6 @@
 package com.fifetoyi.hng_stage_two.config;
 
-import com.fifetoyi.hng_stage_two.service.CustomUserDetailsService;
+import com.fifetoyi.hng_stage_two.services.CustomUserDetailsService;
 import com.fifetoyi.hng_stage_two.util.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
