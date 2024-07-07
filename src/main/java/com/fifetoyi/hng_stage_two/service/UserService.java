@@ -47,7 +47,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public Set<Organisation> getUserOrganisation(String userId) {
+    public Set<Organisation> getUserOrganisations(String userId) {
         return userRepository.findById(userId).map(User::getOrganisations).orElse(null);
     }
 
