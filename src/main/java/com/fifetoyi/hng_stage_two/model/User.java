@@ -2,43 +2,44 @@ package com.fifetoyi.hng_stage_two.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 
 @Entity
-@Table(name = "\"User\"")
+@Table(name = "\"users\"")
 public class User {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "user_id", nullable = false, updatable = false)
     private String userId;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column
+    @Column(name = "phone")
     private String phone;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "Users",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "orgId")
+            name = "user_organisations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "org_id")
     )
-    private Set<Organisation> organisations;
+    private Set<Organisation> organisations = new HashSet<>();
 
     public String getUserId() {
         return userId;

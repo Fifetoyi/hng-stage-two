@@ -7,17 +7,18 @@ import java.util.Set;
 
 
 @Entity
+@Table(name = "organisations")
 public class Organisation {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "org_id", nullable = false, updatable = false)
     private String orgId;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column
+    @Column(name = "description")
     private String description;
 
     @ManyToMany(mappedBy = "organisations", fetch = FetchType.LAZY)

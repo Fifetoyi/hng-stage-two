@@ -1,5 +1,6 @@
 package com.fifetoyi.hng_stage_two.dto;
 
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 
 public class UserDTO {
 
+    @Id
     @Size(max = 255)
     private String userId;
 

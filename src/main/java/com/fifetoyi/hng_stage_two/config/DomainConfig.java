@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 @Configuration
-@EntityScan("com.fifetoyi.hng_stage_two.domain")
-@EnableJpaRepositories("com.fifetoyi.hng_stage_two.repos")
+@EntityScan("com.fifetoyi.hng_stage_two.repos")
+@EnableJpaRepositories(basePackages = "com.fifetoyi.hng_stage_two.repos")
 @EnableTransactionManagement
 public class DomainConfig {
 }

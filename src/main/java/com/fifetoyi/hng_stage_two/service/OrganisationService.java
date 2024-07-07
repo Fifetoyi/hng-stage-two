@@ -18,7 +18,7 @@ public class OrganisationService {
     private OrganisationRepository organisationRepository;
 
     public Organisation createOrganisation(Organisation organisation) {
-        return null;
+        return organisationRepository.save(organisation);
     }
 
     public Optional<Organisation> findById(String orgId) {
