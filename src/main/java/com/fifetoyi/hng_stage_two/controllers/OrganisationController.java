@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @RestController
@@ -26,6 +27,7 @@ public class OrganisationController {
     private UserService userService;
 
     @GetMapping
+    @Transactional
     public ResponseEntity<?> getAllOrganisations() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> userOpt = userService.findByEmail(auth.getName());
@@ -49,6 +51,7 @@ public class OrganisationController {
     }
 
     @GetMapping("/{orgId}")
+    @Transactional
     public ResponseEntity<?> getOrganisation(@PathVariable String orgId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> userOpt = userService.findByEmail(auth.getName());
@@ -71,6 +74,7 @@ public class OrganisationController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<?> createOrganisation(@Validated @RequestBody OrganisationDTO organisationDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Optional<User> userOpt = userService.findByEmail(auth.getName());
@@ -96,6 +100,7 @@ public class OrganisationController {
     }
 
     @PostMapping("/{orgId}/users")
+    @Transactional
     public ResponseEntity<?> addUserToOrganisation(@PathVariable String orgId, @RequestBody Map<String, String> body) {
         String userId = body.get("userId");
 
