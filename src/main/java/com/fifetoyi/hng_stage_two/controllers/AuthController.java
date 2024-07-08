@@ -20,7 +20,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
@@ -97,24 +97,6 @@ public class AuthController {
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
-
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//        Map<String, Object> errorResponse = new HashMap<>();
-//        List<Map<String, String>> errors = new ArrayList<>();
-//
-//        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
-//            Map<String, String> error = new HashMap<>();
-//            error.put("field", fieldError.getField());
-//            error.put("message", fieldError.getDefaultMessage());
-//            errors.add(error);
-//        }
-//
-//        errorResponse.put("errors", errors);
-//
-//        return new ResponseEntity<>(errorResponse, HttpStatus.UNPROCESSABLE_ENTITY);
-//    }
-
 
     @PostMapping("/login")
     @Transactional

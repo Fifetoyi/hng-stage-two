@@ -65,7 +65,7 @@ public class AuthControllerTest {
         Mockito.when(userService.registerUser(Mockito.any())).thenReturn(mockUser);
         Mockito.when(jwtUtil.generateToken(Mockito.any())).thenReturn("dummy-token");
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john@example.com\", \"password\": \"password\", \"phone\": \"1234567890\"}"))
                 .andExpect(status().isCreated())
@@ -81,7 +81,7 @@ public class AuthControllerTest {
 
     @Test
     public void testRegisterUserMissingFields() throws Exception {
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\": \"John\", \"lastName\": \"Doe\"}")) // Missing email and password
                 .andExpect(status().isUnprocessableEntity())
@@ -95,7 +95,7 @@ public class AuthControllerTest {
     public void testRegisterUserDuplicateEmail() throws Exception {
         Mockito.doThrow(new IllegalArgumentException("Duplicate email")).when(userService).registerUser(Mockito.any());
 
-        mockMvc.perform(post("/api/auth/register")
+        mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john@example.com\", \"password\": \"password\", \"phone\": \"1234567890\"}"))
                 .andExpect(status().isBadRequest())
@@ -118,7 +118,7 @@ public class AuthControllerTest {
         Mockito.when(passwordEncoder.matches("password", mockUser.getPassword())).thenReturn(true);
         Mockito.when(jwtUtil.generateToken(Mockito.any())).thenReturn("dummy-token");
 
-        mockMvc.perform(post("/api/auth/login")
+        mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\": \"john@example.com\", \"password\": \"password\"}"))
                 .andExpect(status().isOk())
