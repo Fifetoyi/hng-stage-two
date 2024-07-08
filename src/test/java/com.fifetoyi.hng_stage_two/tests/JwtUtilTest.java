@@ -3,14 +3,13 @@ package com.fifetoyi.hng_stage_two.tests;
 import com.fifetoyi.hng_stage_two.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,15 +54,17 @@ public class JwtUtilTest {
         assertTrue(jwtUtil.validateToken(token, userDetails));
     }
 
-//    @Test
-//    public void testInvalidToken() {
-//        String token = Jwts.builder()
-//                .setClaims(new HashMap<>())
-//                .setSubject("invalid")
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() - 1000))
-//                .signWith(SignatureAlgorithm.HS256, secret)
-//                .compact();
-//        assertFalse(jwtUtil.validateToken(token, userDetails));
-//    }
+    @Test
+    public void testInvalidToken() {
+        String token = jwtUtil.generateToken(userDetails);
+        String invalidToken = token.substring(0, token.length() - 1) + "x";
+
+        try {
+            boolean isValid = jwtUtil.validateToken(invalidToken, userDetails);
+            fail("Expected SignatureException");
+        } catch (SignatureException e) {
+            assertNotNull(e);
+        }
+    }
+
 }
