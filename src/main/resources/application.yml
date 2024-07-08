@@ -38,3 +38,6 @@ springdoc:
 
 jwt:
   secret: 7CD663EFE7E9CE8F1CE3E28939B837E27D98E1272C0D52A47C198910BE0A7E4C
+server:
+  error:
+    include-stacktrace: never

@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -35,17 +33,12 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Validated @RequestBody UserRegistrationDto userDto) {
         try {
-            // Check if userDto is null
             if (userDto == null) {
                 throw new IllegalArgumentException("UserRegistrationDto cannot be null");
             }
-
-            // Check for mandatory fields
             if (userDto.getFirstName() == null || userDto.getLastName() == null || userDto.getEmail() == null || userDto.getPassword() == null) {
                 throw new IllegalArgumentException("Required fields are missing");
             }
-
-            // Check if email already exists
             if (userService.findByEmail(userDto.getEmail()).isPresent()) {
                 throw new DuplicateResourceException("Email already registered");
             }
@@ -58,20 +51,15 @@ public class AuthController {
             user.setPassword(userDto.getPassword());
             user.setPhone(userDto.getPhone());
 
-            // Register user
             User registeredUser = userService.registerUser(user);
-
-            // Check if registeredUser is null
             if (registeredUser == null) {
                 throw new IllegalStateException("User registration failed");
             }
 
-            // Generate token
             String token = jwtUtil.generateToken(new org.springframework.security.core.userdetails.User(
                     registeredUser.getEmail(), registeredUser.getPassword(), new ArrayList<>()
             ));
 
-            // Prepare response
             UserRegistrationDto responseUserDto = new UserRegistrationDto();
             responseUserDto.setUserId(registeredUser.getUserId());
             responseUserDto.setFirstName(registeredUser.getFirstName());
@@ -90,7 +78,6 @@ public class AuthController {
 
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            // Handle specific known exceptions
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("status", "error");
             errorResponse.put("message", e.getMessage());

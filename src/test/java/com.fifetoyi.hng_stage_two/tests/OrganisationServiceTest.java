@@ -63,14 +63,14 @@ public class OrganisationServiceTest {
         assertFalse(userService.getUserOrganisations(otherUser.getUserId()).contains(organisation));
     }
 
-//    @Test
-//    public void testUserCanAccessOwnOrganisation() {
-//        userService.addUserToOrganisation(user.getUserId(), organisation.getOrgId());
-//
-//        Mockito.when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
-//
-//        Set<Organisation> userOrganisations = userService.getUserOrganisations(user.getUserId());
-//        assertTrue(userOrganisations.contains(organisation));
-//    }
+    @Test
+    public void testUserCanAccessOwnOrganisation() {
+        Set<Organisation> organisations = Set.of(organisation);
+        user.setOrganisations(organisations);
+        Mockito.when(userRepository.findById(user.getUserId())).thenReturn(Optional.of(user));
+        Set<Organisation> userOrganisations = userService.getUserOrganisations(user.getUserId());
+        assertTrue(userOrganisations.contains(organisation));
+    }
+
 }
 
