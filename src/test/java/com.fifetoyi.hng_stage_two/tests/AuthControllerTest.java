@@ -15,8 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +53,6 @@ public class AuthControllerTest {
 
     @Test
     public void testRegisterUserSuccessfully() throws Exception {
-        // Create a mock user
         User mockUser = new User();
         mockUser.setUserId("mock-user-id");
         mockUser.setFirstName("John");
@@ -63,12 +62,10 @@ public class AuthControllerTest {
         mockUser.setPhone("1234567890");
         mockUser.setOrganisations(new HashSet<>());
 
-        // Mock the UserService and JwtUtil methods
         Mockito.when(userService.registerUser(Mockito.any())).thenReturn(mockUser);
         Mockito.when(jwtUtil.generateToken(Mockito.any())).thenReturn("dummy-token");
 
-        // Perform the POST request and verify the response
-        mockMvc.perform(post("/auth/register")
+        mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john@example.com\", \"password\": \"password\", \"phone\": \"1234567890\"}"))
                 .andExpect(status().isCreated())
@@ -84,7 +81,7 @@ public class AuthControllerTest {
 
     @Test
     public void testRegisterUserMissingFields() throws Exception {
-        mockMvc.perform(post("/auth/register")
+        mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\": \"John\", \"lastName\": \"Doe\"}")) // Missing email and password
                 .andExpect(status().isUnprocessableEntity())
@@ -98,7 +95,7 @@ public class AuthControllerTest {
     public void testRegisterUserDuplicateEmail() throws Exception {
         Mockito.doThrow(new IllegalArgumentException("Duplicate email")).when(userService).registerUser(Mockito.any());
 
-        mockMvc.perform(post("/auth/register")
+        mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\": \"John\", \"lastName\": \"Doe\", \"email\": \"john@example.com\", \"password\": \"password\", \"phone\": \"1234567890\"}"))
                 .andExpect(status().isBadRequest())
@@ -108,7 +105,31 @@ public class AuthControllerTest {
 
     @Test
     public void testLoginUserSuccessfully() throws Exception {
+        User mockUser = new User();
+        mockUser.setUserId("mock-user-id");
+        mockUser.setFirstName("John");
+        mockUser.setLastName("Doe");
+        mockUser.setEmail("john@example.com");
+        mockUser.setPassword("encoded-password");
+        mockUser.setPhone("1234567890");
+        mockUser.setOrganisations(new HashSet<>());
 
+        Mockito.when(userService.findByEmail("john@example.com")).thenReturn(Optional.of(mockUser));
+        Mockito.when(passwordEncoder.matches("password", mockUser.getPassword())).thenReturn(true);
+        Mockito.when(jwtUtil.generateToken(Mockito.any())).thenReturn("dummy-token");
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\": \"john@example.com\", \"password\": \"password\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("success")))
+                .andExpect(jsonPath("$.message", is("Login successful")))
+                .andExpect(jsonPath("$.data.accessToken", is("dummy-token")))
+                .andExpect(jsonPath("$.data.user.firstName", is("John")))
+                .andExpect(jsonPath("$.data.user.lastName", is("Doe")))
+                .andExpect(jsonPath("$.data.user.email", is("john@example.com")))
+                .andExpect(jsonPath("$.data.user.phone", is("1234567890")));
     }
+
 }
 

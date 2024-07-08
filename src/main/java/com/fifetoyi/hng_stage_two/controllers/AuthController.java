@@ -19,7 +19,7 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
