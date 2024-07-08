@@ -1,4 +1,4 @@
-package com.fifetoyi.hng_stage_two.util;
+package com.fifetoyi.hng_stage_two.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

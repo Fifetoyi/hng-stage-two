@@ -1,4 +1,4 @@
-package com.fifetoyi.hng_stage_two.util;
+package com.fifetoyi.hng_stage_two.exceptions;
 
 import java.util.List;
 
